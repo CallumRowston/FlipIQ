@@ -20,7 +20,7 @@ const Card: React.FC<CardProps> = ({
           <h2 className="text-xl font-semibold mb-4">Question</h2>
           <p className="mb-6 text-gray-200">{question}</p>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition cursor-pointer hover:scale-105"
             onClick={() => setFlipped(true)}
           >
             Show Answer
@@ -31,7 +31,7 @@ const Card: React.FC<CardProps> = ({
           <h2 className="text-xl font-semibold mb-4">Answer</h2>
           <p className="mb-6 text-gray-200">{answer}</p>
           <button
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition cursor-pointer hover:scale-105"
             onClick={() => setFlipped(false)}
           >
             Back to Question

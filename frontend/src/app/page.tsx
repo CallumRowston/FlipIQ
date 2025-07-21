@@ -46,23 +46,25 @@ export default function Home() {
       <main className="p-8 min-h-screen bg-gray-900">
         <h1 className="text-3xl font-bold mb-8 text-center ">FLIPIQ</h1>
         <h2 className="text-2xl font-semibold mb-6 text-center">
-          Select a Quiz
+          Select a Category
         </h2>
-        <ul className="max-w-xl mx-auto">
-          {quizzes.map((quiz) => (
-            <li key={quiz.id} className="mb-6">
-              <button
-                onClick={() => {
-                  setSelectedQuiz(quiz);
-                  setCardIndex(0);
-                }}
-                className="w-full text-lg font-medium bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition"
-              >
-                {quiz.title}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center">
+          <ul className="max-w-xl mx-auto">
+            {quizzes.map((quiz) => (
+              <li key={quiz.id} className="mb-6">
+                <button
+                  onClick={() => {
+                    setSelectedQuiz(quiz);
+                    setCardIndex(0);
+                  }}
+                  className="w-xs text-lg font-medium bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition cursor-pointer hover:scale-105"
+                >
+                  {quiz.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </main>
     );
   }
@@ -73,6 +75,9 @@ export default function Home() {
   return (
     <main className="p-8 min-h-screen bg-gray-900 text-center">
       <h1 className="text-3xl font-bold mb-8">{selectedQuiz.title}</h1>
+      <div className="mb-4 text-lg text-gray-200">
+        {cardIndex + 1} / {flashcards.length}
+      </div>
       <Card
         question={currentCard.question}
         answer={currentCard.answer}
@@ -83,7 +88,7 @@ export default function Home() {
         <button
           onClick={() => setCardIndex(cardIndex - 1)}
           disabled={cardIndex === 0}
-          className={`px-4 py-2 rounded bg-gray-300 text-gray-700 font-medium transition ${
+          className={`px-4 py-2 rounded bg-gray-300 text-gray-700 font-medium transition cursor-pointer hover:scale-105 ${
             cardIndex === 0
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-gray-400"
@@ -94,7 +99,7 @@ export default function Home() {
         <button
           onClick={() => setCardIndex(cardIndex + 1)}
           disabled={cardIndex === flashcards.length - 1}
-          className={`px-4 py-2 rounded bg-blue-500 text-white font-medium transition ${
+          className={`px-4 py-2 rounded bg-blue-500 text-white font-medium transition cursor-pointer hover:scale-105 ${
             cardIndex === flashcards.length - 1
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-blue-600"
@@ -106,7 +111,7 @@ export default function Home() {
       <div className="mt-8">
         <button
           onClick={() => setSelectedQuiz(null)}
-          className="px-4 py-2 rounded bg-gray-500 text-white font-medium hover:bg-gray-600 transition"
+          className="px-4 py-2 rounded bg-gray-500 text-white font-medium hover:bg-gray-600 transition cursor-pointer hover:scale-105"
         >
           Back to Quiz List
         </button>
