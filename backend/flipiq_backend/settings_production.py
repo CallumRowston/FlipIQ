@@ -4,11 +4,6 @@ import os
 # Production settings
 DEBUG = False
 
-print("=== LOADING PRODUCTION SETTINGS ===")
-print(f"DATABASE_URL present: {'DATABASE_URL' in os.environ}")
-print(f"SECRET_KEY present: {'SECRET_KEY' in os.environ}")
-print(f"PORT: {os.environ.get('PORT', 'NOT SET')}")
-
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-key-change-in-production')
 
@@ -18,10 +13,6 @@ PORT = int(os.environ.get('PORT', 8000))
 # Parse ALLOWED_HOSTS from environment variable
 allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,flipiq-production.up.railway.app')
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
-
-# Debug logging
-print(f"ALLOWED_HOSTS environment variable: {os.environ.get('ALLOWED_HOSTS', 'NOT SET')}")
-print(f"Final ALLOWED_HOSTS: {ALLOWED_HOSTS}")
 
 # Railway provides DATABASE_URL automatically
 if 'DATABASE_URL' in os.environ:
