@@ -11,10 +11,12 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# Use production settings on Railway
-if os.environ.get('RAILWAY_ENVIRONMENT'):
+# Check if we're on Railway or have explicit settings module
+if 'RAILWAY_STATIC_URL' in os.environ or 'DATABASE_URL' in os.environ:
+    # We're on Railway, use production settings
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings_production')
-else:
+elif 'DJANGO_SETTINGS_MODULE' not in os.environ:
+    # Local development, use regular settings
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings')
 
 application = get_wsgi_application()
