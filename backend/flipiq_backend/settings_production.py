@@ -14,6 +14,9 @@ PORT = int(os.environ.get('PORT', 8000))
 allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,flipiq-production.up.railway.app')
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
 
+# Temporarily allow all hosts for Railway health checks
+ALLOWED_HOSTS.append('*')
+
 # Railway provides DATABASE_URL automatically
 if 'DATABASE_URL' in os.environ:
     import dj_database_url

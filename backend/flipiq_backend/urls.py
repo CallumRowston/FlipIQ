@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,8 +30,10 @@ from accounts.views import profile
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
 
+@csrf_exempt
+@require_http_methods(["GET", "HEAD"])
 def simple_health(request):
-    return HttpResponse("OK", content_type="text/plain")
+    return HttpResponse("OK", content_type="text/plain", status=200)
 
 urlpatterns = [
     path('', health_check, name='health_check'),
