@@ -52,10 +52,10 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
-# Fix middleware order for production
+# Fix middleware order for production - don't override, just reorder
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware', 
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

@@ -25,7 +25,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from quiz.views_auth import RegisterView
-from accounts.views import profile
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,8 +39,13 @@ def simple_health(request):
     logger.info("Simple health check endpoint accessed")
     return HttpResponse("OK", content_type="text/plain", status=200)
 
+# Ultra simple test endpoint
+def test_endpoint(request):
+    return HttpResponse("WORKING", content_type="text/plain")
+
 urlpatterns = [
     path('', health_check, name='health_check'),
+    path('test/', test_endpoint, name='test'),
     path('health/', simple_health, name='simple_health'),
     path('healthz/', simple_health, name='healthz'),
     path('ping/', simple_health, name='ping'),
@@ -51,5 +55,4 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('auth/', include('social_django.urls', namespace='social')),
-    path('accounts/profile/', profile, name='profile'),
 ]
