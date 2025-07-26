@@ -11,6 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings')
+# Use production settings on Railway
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings_production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings')
 
 application = get_wsgi_application()
