@@ -35,16 +35,51 @@ class FlashCardAIService:
             )
             
             content = response.choices[0].message.content.strip()
+            print(f"OpenAI Response: {content}")  # Debug log
+            
+            # Check if content is empty
+            if not content:
+                raise Exception("OpenAI returned empty response")
+            
+            # Remove markdown code blocks if present
+            if content.startswith('```json'):
+                content = content[7:]  # Remove ```json
+            elif content.startswith('```'):
+                content = content[3:]  # Remove ```
+            
+            if content.endswith('```'):
+                content = content[:-3]  # Remove closing ```
+            
+            content = content.strip()
             
             # Parse the JSON response
-            flashcards_data = json.loads(content)
+            try:
+                flashcards_data = json.loads(content)
+            except json.JSONDecodeError as json_error:
+                raise Exception(f"Failed to parse OpenAI response as JSON: {content}. Error: {str(json_error)}")
+            
+            # Validate the structure
+            if not isinstance(flashcards_data, list):
+                raise Exception(f"Expected JSON array, got: {type(flashcards_data)}")
+            
+            for i, card in enumerate(flashcards_data):
+                if not isinstance(card, dict) or 'question' not in card or 'answer' not in card:
+                    raise Exception(f"Invalid flashcard format at index {i}: {card}")
             
             return flashcards_data
             
+        except openai.AuthenticationError:
+            raise Exception("OpenAI API key is invalid or missing")
+        except openai.RateLimitError:
+            raise Exception("OpenAI API rate limit exceeded")
+        except openai.APIError as api_error:
+            raise Exception(f"OpenAI API error: {str(api_error)}")
         except Exception as e:
+            if "Error generating flashcards:" in str(e):
+                raise e  # Re-raise our custom errors
             raise Exception(f"Error generating flashcards: {str(e)}")
     
-    def create_quiz_with_flashcards(self, title, topic, num_cards=5):
+    def create_quiz_with_flashcards(self, title, topic, num_cards=5, user=None):
         """
         Create a new quiz with AI-generated flashcards
         """
@@ -53,7 +88,8 @@ class FlashCardAIService:
         # Create the quiz
         quiz = Quiz.objects.create(
             title=title,
-            description=f"AI-generated quiz about {topic}"
+            description=f"AI-generated quiz about {topic}",
+            created_by=user
         )
         
         # Create flashcards for the quiz
