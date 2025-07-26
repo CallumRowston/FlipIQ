@@ -20,6 +20,14 @@ if 'DATABASE_URL' in os.environ:
     DATABASES = {
         'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
+else:
+    # Fallback to SQLite for testing (not recommended for production)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # CORS settings for production
 cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
@@ -33,6 +41,9 @@ MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Ensure staticfiles directory exists
+os.makedirs(STATIC_ROOT, exist_ok=True)
 
 # Security headers
 SECURE_BROWSER_XSS_FILTER = True
