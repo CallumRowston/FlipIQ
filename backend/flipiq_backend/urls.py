@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,8 +27,14 @@ from accounts.views import profile
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
 
+def simple_health(request):
+    return HttpResponse("OK", content_type="text/plain")
+
 urlpatterns = [
     path('', health_check, name='health_check'),
+    path('health/', simple_health, name='simple_health'),
+    path('healthz/', simple_health, name='healthz'),
+    path('ping/', simple_health, name='ping'),
     path('admin/', admin.site.urls),
     path('api/', include('quiz.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
