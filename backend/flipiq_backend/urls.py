@@ -26,13 +26,18 @@ from rest_framework_simplejwt.views import (
 )
 from quiz.views_auth import RegisterView
 from accounts.views import profile
+import logging
+
+logger = logging.getLogger(__name__)
 
 def health_check(request):
+    logger.info("Health check endpoint accessed")
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
 
 @csrf_exempt
 @require_http_methods(["GET", "HEAD"])
 def simple_health(request):
+    logger.info("Simple health check endpoint accessed")
     return HttpResponse("OK", content_type="text/plain", status=200)
 
 urlpatterns = [
