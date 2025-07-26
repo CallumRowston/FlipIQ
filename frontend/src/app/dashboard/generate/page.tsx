@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiCall } from "@/lib/api";
 
 export default function GenerateQuiz() {
   const [title, setTitle] = useState("");
@@ -16,18 +17,8 @@ export default function GenerateQuiz() {
     setError("");
 
     try {
-      const token = localStorage.getItem("access_token");
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await fetch("http://localhost:8000/api/generate-quiz/", {
+      const response = await apiCall("/api/generate-quiz/", {
         method: "POST",
-        headers,
         body: JSON.stringify({
           title,
           topic,
@@ -40,7 +31,7 @@ export default function GenerateQuiz() {
         throw new Error(errorData.error || "Failed to generate quiz");
       }
 
-      const quiz = await response.json();
+      await response.json();
       // Redirect to the dashboard to see the new quiz
       router.push("/dashboard");
     } catch (err) {

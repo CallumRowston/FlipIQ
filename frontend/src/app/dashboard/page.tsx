@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiCall } from "@/lib/api";
 import Card from "./Card";
 
 interface FlashCard {
@@ -32,16 +33,8 @@ export default function Home() {
     const token = localStorage.getItem("access_token");
     setIsAuthenticated(!!token);
 
-    // Fetch quizzes with auth header if available
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-    };
-
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    fetch("http://localhost:8000/api/quizzes/", { headers })
+    // Fetch quizzes using API utility
+    apiCall("/api/quizzes/")
       .then((res) => res.json())
       .then((data) => {
         setQuizzes(data);

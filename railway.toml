@@ -1,0 +1,11 @@
+# Railway deployment configuration
+# This file tells Railway how to build and deploy your Django app
+
+[build]
+  command = "cd backend && pip install -r requirements.txt && python manage.py collectstatic --noinput"
+
+[deploy]
+  startCommand = "cd backend && python manage.py migrate && gunicorn flipiq_backend.wsgi --bind 0.0.0.0:$PORT"
+
+[env]
+  DJANGO_SETTINGS_MODULE = "flipiq_backend.settings_production"
