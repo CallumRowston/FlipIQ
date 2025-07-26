@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import API_BASE_URL from "@/lib/api";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,7 +20,7 @@ export default function AuthPage() {
     try {
       if (isLogin) {
         // Login
-        const response = await fetch("http://localhost:8000/api/token/", {
+        const response = await fetch(`${API_BASE_URL}/api/token/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -40,7 +41,7 @@ export default function AuthPage() {
         }
       } else {
         // Register
-        const response = await fetch("http://localhost:8000/api/register/", {
+        const response = await fetch(`${API_BASE_URL}/api/register/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -54,19 +55,16 @@ export default function AuthPage() {
 
         if (response.ok) {
           // Auto-login after registration
-          const loginResponse = await fetch(
-            "http://localhost:8000/api/token/",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                username,
-                password,
-              }),
-            }
-          );
+          const loginResponse = await fetch(`${API_BASE_URL}/api/token/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+          });
 
           if (loginResponse.ok) {
             const data = await loginResponse.json();
@@ -88,7 +86,7 @@ export default function AuthPage() {
 
   const handleGithubAuth = () => {
     // Redirect to Django's GitHub OAuth
-    window.location.href = "http://localhost:8000/auth/login/github-oauth2/";
+    window.location.href = `${API_BASE_URL}/auth/login/github-oauth2/`;
   };
 
   const handleContinueAsGuest = () => {
