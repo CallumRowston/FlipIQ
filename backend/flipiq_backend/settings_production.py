@@ -52,18 +52,8 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
-# Fix middleware order for production - don't override, just reorder
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware', 
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+# Don't modify middleware for now - use base settings
+# MIDDLEWARE modifications temporarily disabled for debugging
 
 # Add whitenoise for static files
 # Static files
