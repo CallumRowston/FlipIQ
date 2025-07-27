@@ -32,17 +32,24 @@ export default function Home() {
 
   const loadQuizzes = async () => {
     const token = localStorage.getItem("access_token");
-    setIsAuthenticated(!!token);
-
+    
     try {
       let serverQuizzes: Quiz[] = [];
+      let userAuthenticated = false;
 
-      if (token) {
-        // Fetch authenticated user quizzes if logged in
+      // Try to fetch user quizzes - this will work for both JWT and session auth
+      try {
         const response = await apiCall("/api/quizzes/");
-        serverQuizzes = await response.json();
-      } else {
-        // Fetch public quizzes for guest users (same endpoint, but without auth)
+        if (response.ok) {
+          serverQuizzes = await response.json();
+          userAuthenticated = true;
+        }
+      } catch (error) {
+        console.log("User not authenticated, fetching public quizzes");
+      }
+
+      // If user is not authenticated, fetch public quizzes
+      if (!userAuthenticated) {
         try {
           const response = await fetch(
             `${
@@ -53,6 +60,7 @@ export default function Home() {
               headers: {
                 "Content-Type": "application/json",
               },
+              credentials: "include", // Include cookies for potential session auth
             }
           );
 
@@ -68,6 +76,9 @@ export default function Home() {
         }
       }
 
+      // Set authentication status based on whether we got user quizzes OR have a JWT token
+      setIsAuthenticated(userAuthenticated || !!token);
+
       // Always fetch guest quizzes
       const guestQuizzes = getGuestQuizzes();
 
@@ -80,6 +91,7 @@ export default function Home() {
       // If server fails, still show guest quizzes
       const guestQuizzes = getGuestQuizzes();
       setQuizzes(guestQuizzes);
+      setIsAuthenticated(!!token);
     } finally {
       setLoading(false);
     }

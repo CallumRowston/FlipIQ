@@ -34,7 +34,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from quiz.views_auth import RegisterView
-from quiz.views_oauth import OAuthCallbackView, AuthUserView
 from accounts.views import profile
 
 def health_check(request):
@@ -48,8 +47,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('auth/', include('social_django.urls')),  # GitHub OAuth URLs
-    path('auth/callback/', OAuthCallbackView.as_view(), name='oauth_callback'),
-    path('auth/user/', AuthUserView.as_view(), name='auth_user'),
     path('accounts/profile/', profile, name='profile'),
 ]
 

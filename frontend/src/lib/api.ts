@@ -10,6 +10,7 @@ export const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     "Content-Type": "application/json",
   };
 
+  // First, try with JWT token if available
   if (token) {
     defaultHeaders.Authorization = `Bearer ${token}`;
   }
@@ -20,12 +21,13 @@ export const apiCall = async (endpoint: string, options: RequestInit = {}) => {
       ...defaultHeaders,
       ...options.headers,
     },
+    credentials: "include", // Always include cookies for Django session auth
   };
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
-  // Handle token refresh if needed
-  if (response.status === 401) {
+  // Handle token refresh if needed for JWT users
+  if (response.status === 401 && token) {
     // Token might be expired, try to refresh
     const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
