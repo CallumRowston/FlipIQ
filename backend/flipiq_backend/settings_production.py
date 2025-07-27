@@ -115,17 +115,13 @@ CSRF_TRUSTED_ORIGINS = [
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 
-# Social Auth settings for HTTPS
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-SOCIAL_AUTH_USE_HTTPS = True
-
-# GitHub OAuth settings
-SOCIAL_AUTH_GITHUB_KEY = os.environ.get('GITHUB_CLIENT_ID')
-SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
+# GitHub OAuth settings for production
+SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
+SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 
-# Login/logout redirect URLs
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'https://flipiq-frontend.vercel.app'
-SOCIAL_AUTH_LOGIN_ERROR_URL = 'https://flipiq-frontend.vercel.app/error'
-LOGIN_URL = '/auth/login/github/'
-LOGOUT_URL = '/auth/logout/'
+# Authentication backends
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
