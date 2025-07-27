@@ -17,12 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse, HttpResponse
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Ultra simple test endpoint
 def test_endpoint(request):
+    logger.info(f"TEST ENDPOINT HIT: {request.method} {request.path}")
+    print(f"TEST ENDPOINT HIT: {request.method} {request.path}")
     return HttpResponse("WORKING", content_type="text/plain")
 
 def health_check(request):
+    logger.info(f"HEALTH CHECK HIT: {request.method} {request.path}")
+    print(f"HEALTH CHECK HIT: {request.method} {request.path}")
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
 
 urlpatterns = [
