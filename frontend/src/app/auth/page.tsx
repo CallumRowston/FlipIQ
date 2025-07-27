@@ -97,13 +97,13 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-2">FLIPIQ</h1>
-          <p className="text-gray-400">
-            AI-powered flashcard quizzes for better learning
+          <p className="text-gray-200">
+            AI-powered flashcard quizzes for quick learning
           </p>
         </div>
 
@@ -111,12 +111,12 @@ export default function AuthPage() {
         <div className="text-center">
           <button
             onClick={handleContinueAsGuest}
-            className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition duration-200 mb-6"
+            className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 hover:border-green-400 border border-transparent transition duration-200 mb-6 cursor-pointer"
           >
             🚀 Continue as Guest
           </button>
-          <p className="text-sm text-gray-500 mb-6">
-            No account needed to try the app
+          <p className="text-sm text-gray-300 mb-6">
+            No account needed to try the app!
           </p>
         </div>
 
@@ -126,19 +126,19 @@ export default function AuthPage() {
             <div className="w-full border-t border-gray-600"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-900 text-gray-400">
-              Or create an account to save your quizzes
+            <span className="px-2  text-gray-200">
+              Log in or create an account to save your quizzes
             </span>
           </div>
         </div>
 
         {/* Auth Form */}
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700/50">
           {/* Toggle Login/Register */}
           <div className="flex mb-6">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-lg transition ${
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-l-lg transition cursor-pointer ${
                 isLogin
                   ? "bg-blue-600 text-white"
                   : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -148,7 +148,7 @@ export default function AuthPage() {
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-lg transition ${
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-r-lg transition cursor-pointer ${
                 !isLogin
                   ? "bg-blue-600 text-white"
                   : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -161,7 +161,7 @@ export default function AuthPage() {
           {/* GitHub OAuth Button */}
           <button
             onClick={handleGithubAuth}
-            className="w-full bg-gray-700 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-600 transition duration-200 mb-4 flex items-center justify-center"
+            className="w-full bg-gray-700 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-600 transition duration-200 mb-4 flex items-center justify-center cursor-pointer"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -242,7 +242,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading
                 ? "Please wait..."
@@ -255,7 +255,10 @@ export default function AuthPage() {
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-500">
-          <p>Experience AI-generated flashcards and boost your learning</p>
+          <p>
+            Tech Stack: Next.js, TypeScript, Tailwind CSS, Django, PostgreSQL,
+            OpenAI, Vercel, Railway
+          </p>
         </div>
       </div>
     </div>

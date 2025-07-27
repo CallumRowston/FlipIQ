@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiCall } from "@/lib/api";
 
 export default function GenerateQuiz() {
   const [title, setTitle] = useState("");
@@ -17,8 +16,11 @@ export default function GenerateQuiz() {
     setError("");
 
     try {
-      const response = await apiCall("/api/generate-quiz/", {
+      const response = await fetch("http://localhost:8000/api/generate-quiz/", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           title,
           topic,
@@ -31,9 +33,9 @@ export default function GenerateQuiz() {
         throw new Error(errorData.error || "Failed to generate quiz");
       }
 
-      await response.json();
-      // Redirect to the dashboard to see the new quiz
-      router.push("/dashboard");
+      const quiz = await response.json();
+      // Redirect to the home page to see the new quiz
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -119,7 +121,7 @@ export default function GenerateQuiz() {
 
         <div className="mt-8 text-center">
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/")}
             className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 hover:border-gray-400 border border-transparent transition cursor-pointer"
           >
             Back to Quizzes

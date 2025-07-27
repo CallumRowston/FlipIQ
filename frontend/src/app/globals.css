@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background:rgb(55, 55, 55);
+  --background: rgb(55, 55, 55);
   --foreground: #171717;
 }
 
@@ -10,6 +10,44 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom animations */
+  --animate-gradient-wave: gradient-wave 3s ease infinite;
+  --animate-gradient-shift: gradient-shift 4s ease infinite;
+  --animate-border-flow: border-flow 2s linear infinite;
+}
+
+@keyframes gradient-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes border-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +58,43 @@
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(99, 102, 241, 0.15) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(168, 85, 247, 0.15) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(59, 130, 246, 0.1) 0%,
+      transparent 50%
+    ),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 100px,
+    rgba(255, 255, 255, 0.01) 100px,
+    rgba(255, 255, 255, 0.01) 102px
+  );
+  pointer-events: none;
+  z-index: -1;
 }

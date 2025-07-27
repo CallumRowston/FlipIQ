@@ -8,7 +8,7 @@ export default function RootPage() {
   useEffect(() => {
     // Check if user has a token
     const token = localStorage.getItem("access_token");
-    
+
     if (token) {
       // User is logged in, go to dashboard
       router.push("/dashboard");
@@ -19,7 +19,7 @@ export default function RootPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-white mb-4">FLIPIQ</h1>
         <div className="animate-pulse text-gray-400">Loading...</div>
