@@ -133,7 +133,7 @@ export default function AuthPage() {
         </div>
 
         {/* Auth Form */}
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700/50">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-500/50">
           {/* Toggle Login/Register */}
           <div className="flex mb-6">
             <button
@@ -161,7 +161,7 @@ export default function AuthPage() {
           {/* GitHub OAuth Button */}
           <button
             onClick={handleGithubAuth}
-            className="w-full bg-gray-700 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-600 transition duration-200 mb-4 flex items-center justify-center cursor-pointer"
+            className="w-full bg-gray-700 text-white py-3 px-4 rounded-lg font-medium border border-transparent hover:border-gray-500  hover:bg-gray-600 transition duration-200 mb-4 flex items-center justify-center cursor-pointer"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -242,7 +242,7 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium border border-transparent hover:border-blue-500 hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading
                 ? "Please wait..."
