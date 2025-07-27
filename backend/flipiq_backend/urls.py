@@ -1,5 +1,16 @@
 """
-URL configuration for flipiq_backend project.
+URL configuration ffrom quiz.views_auth import RegisterView
+from accounts.views import profile
+
+def health_check(request):
+    return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
+
+# Debug: Print if social_django is available
+try:
+    import social_django
+    print("social_django is available")
+except ImportError:
+    print("social_django is NOT available")ackend project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -23,6 +34,12 @@ from rest_framework_simplejwt.views import (
 )
 from quiz.views_auth import RegisterView
 from accounts.views import profile
+# Debug: Print if social_django is available
+try:
+    import social_django
+    print("social_django is available")
+except ImportError:
+    print("social_django is NOT available")
 
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
@@ -37,3 +54,4 @@ urlpatterns = [
     path('auth/', include('social_django.urls', namespace='social')),
     path('accounts/profile/', profile, name='profile'),
 ]
+
