@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiCall } from "@/lib/api";
+import { saveGuestQuiz } from "@/lib/guestStorage";
 
 export default function GenerateQuiz() {
   const [title, setTitle] = useState("");
@@ -11,12 +12,17 @@ export default function GenerateQuiz() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const isAuthenticated = !!localStorage.getItem("access_token");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    const isAuthenticated = !!localStorage.getItem("access_token");
+
     try {
+      // Always call the AI API to generate the quiz content
       const response = await apiCall("/api/generate-quiz/", {
         method: "POST",
         body: JSON.stringify({
@@ -31,7 +37,18 @@ export default function GenerateQuiz() {
         throw new Error(errorData.error || "Failed to generate quiz");
       }
 
-      await response.json();
+      const quizData = await response.json();
+
+      if (!isAuthenticated) {
+        // For guest users, save the AI-generated quiz locally
+        saveGuestQuiz({
+          title: quizData.title,
+          description: quizData.description,
+          flashcards: quizData.flashcards,
+        });
+      }
+      // For authenticated users, the quiz is already saved on the server
+      
       // Redirect to the dashboard to see the new quiz
       router.push("/dashboard");
     } catch (err) {
@@ -47,6 +64,22 @@ export default function GenerateQuiz() {
         <h1 className="text-3xl font-bold mb-8 text-center">
           Generate AI Quiz
         </h1>
+
+        {!isAuthenticated && (
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
+            <div className="flex items-center space-x-2">
+              <span className="text-yellow-200 text-sm">
+                <strong>Guest Mode:</strong> AI Generated quizzes will not be saved after you close this window. 
+                <button 
+                  onClick={() => router.push("/auth")}
+                  className="text-yellow-300 underline hover:text-yellow-100 ml-1 cursor-pointer"
+                >
+                  Login to save permanently
+                </button>
+              </span>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -113,7 +146,7 @@ export default function GenerateQuiz() {
                 : "bg-blue-500 text-white hover:bg-blue-600 hover:border-blue-400"
             }`}
           >
-            {loading ? "Generating Quiz..." : "Generate Quiz"}
+            {loading ? "Generating Quiz..." : "Generate AI Quiz"}
           </button>
         </form>
 

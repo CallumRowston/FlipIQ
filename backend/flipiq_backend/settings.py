@@ -155,9 +155,9 @@ SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
 
 # Redirect URLs - point to frontend dashboard
-LOGIN_REDIRECT_URL = 'http://localhost:3000/dashboard'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:3000/dashboard'
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'http://localhost:3000/dashboard'
+LOGIN_REDIRECT_URL = 'http://localhost:3000/auth/callback'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:3000/auth/callback'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'http://localhost:3000/auth/callback'
 LOGOUT_REDIRECT_URL = 'http://localhost:3000/auth'
 
 # OpenAI Settings
