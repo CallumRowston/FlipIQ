@@ -55,11 +55,10 @@ CORS_ALLOWED_HEADERS = [
 # Don't modify middleware for now - use base settings
 # MIDDLEWARE modifications temporarily disabled for debugging
 
-# Add whitenoise for static files
-# Static files
+# Static files (temporarily simplified for debugging)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Disabled for debugging
 
 # Ensure staticfiles directory exists
 os.makedirs(STATIC_ROOT, exist_ok=True)
