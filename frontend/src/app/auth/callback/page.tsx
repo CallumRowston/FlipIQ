@@ -31,50 +31,43 @@ function AuthCallbackContent() {
           return;
         }
 
-        // If no tokens in URL, check if we have a session cookie or need to exchange code
-        const code = searchParams.get("code");
+        // Check for OAuth errors
         const error = searchParams.get("error");
-
         if (error) {
           setStatus("error");
           setMessage(`Authentication failed: ${error}`);
           return;
         }
 
-        if (code) {
-          // Exchange code for tokens via backend
-          const response = await fetch(
-            `${
-              process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-            }/auth/github/callback/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ code }),
-              credentials: "include", // Include cookies
-            }
-          );
+        // If we get here, user should be authenticated via Django session after OAuth
+        // Try to get JWT tokens from the session
+        const checkAuthResponse = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+          }/auth/callback/`,
+          {
+            method: "GET",
+            credentials: "include", // Include session cookies
+          }
+        );
 
-          if (response.ok) {
-            const data = await response.json();
-            if (data.access && data.refresh) {
-              localStorage.setItem("access_token", data.access);
-              localStorage.setItem("refresh_token", data.refresh);
-              setStatus("success");
-              setMessage("Successfully authenticated! Redirecting...");
+        if (checkAuthResponse.ok) {
+          const data = await checkAuthResponse.json();
+          if (data.access && data.refresh) {
+            localStorage.setItem("access_token", data.access);
+            localStorage.setItem("refresh_token", data.refresh);
+            setStatus("success");
+            setMessage("Successfully authenticated! Redirecting...");
 
-              setTimeout(() => {
-                router.push("/dashboard");
-              }, 1000);
-              return;
-            }
+            setTimeout(() => {
+              router.push("/dashboard");
+            }, 1000);
+            return;
           }
         }
 
-        // If we get here, try to check if user is already authenticated via session
-        const checkAuthResponse = await fetch(
+        // Fallback: try the auth/user endpoint
+        const userAuthResponse = await fetch(
           `${
             process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
           }/auth/user/`,
@@ -83,8 +76,8 @@ function AuthCallbackContent() {
           }
         );
 
-        if (checkAuthResponse.ok) {
-          const userData = await checkAuthResponse.json();
+        if (userAuthResponse.ok) {
+          const userData = await userAuthResponse.json();
           if (userData.tokens) {
             localStorage.setItem("access_token", userData.tokens.access);
             localStorage.setItem("refresh_token", userData.tokens.refresh);
