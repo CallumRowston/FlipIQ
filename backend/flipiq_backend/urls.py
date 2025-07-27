@@ -46,7 +46,7 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
-    path('auth/', include('social_django.urls')),  # GitHub OAuth URLs
+    path('auth/', include('social_django.urls', namespace='social')),  # GitHub OAuth URLs
     path('accounts/profile/', profile, name='profile'),
 ]
 
