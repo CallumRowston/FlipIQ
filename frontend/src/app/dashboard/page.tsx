@@ -53,12 +53,11 @@ export default function Home() {
     setFlipped(false);
   }, [cardIndex, selectedQuiz]);
 
-  if (loading)
-    return <div className="bg-gray-900 text-center py-8">Loading...</div>;
+  if (loading) return <div className="text-center py-8">Loading...</div>;
 
   if (!selectedQuiz) {
     return (
-      <main className="p-8 min-h-screen bg-gray-900">
+      <main className="p-8 min-h-screen">
         {/* User Status Bar */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-center">FLIPIQ</h1>
@@ -68,7 +67,7 @@ export default function Home() {
                 <span className="text-green-400 text-sm">✓ Logged in</span>
                 <button
                   onClick={handleLogout}
-                  className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition"
+                  className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition cursor-pointer"
                 >
                   Logout
                 </button>
@@ -78,7 +77,7 @@ export default function Home() {
                 <span className="text-yellow-400 text-sm">👋 Guest mode</span>
                 <button
                   onClick={() => router.push("/auth")}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition cursor-pointer"
                 >
                   Login
                 </button>
@@ -87,32 +86,36 @@ export default function Home() {
           </div>
         </div>
 
-        <h2 className="text-2xl font-semibold mb-6 text-center">
-          Select a Category
-        </h2>
-
         {/* Generate Quiz Button */}
         <div className="text-center mb-8">
-          <button
-            onClick={() => router.push("/dashboard/generate")}
-            className="bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 hover:scale-105 transition cursor-pointer"
-          >
-            ✨ Generate AI Quiz
-          </button>
+          <div className="relative inline-block bg-gradient-to-r from-purple-500 via-blue-500 to-yellow-500 bg-[length:400%_400%] animate-gradient-wave hover:bg-transparent p-1.5 rounded-2xl hover:scale-110 transition-all cursor-pointer">
+            <button
+              onClick={() => router.push("/dashboard/generate")}
+              className="bg-gray-700 hover:bg-transparent text-white px-12 py-6 rounded-2xl font-bold text-xl block cursor-pointer transition-all"
+            >
+              ✨ Generate AI Quiz
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center">
-          <ul className="max-w-xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-6 text-center">
+          or select a quiz below
+        </h2>
+
+        <div className="flex justify-center">
+          <ul className="max-w-2xl mx-auto space-y-4">
             {quizzes.map((quiz) => (
-              <li key={quiz.id} className="mb-6">
+              <li key={quiz.id}>
                 <button
                   onClick={() => {
                     setSelectedQuiz(quiz);
                     setCardIndex(0);
                   }}
-                  className="w-xs text-lg font-medium bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition cursor-pointer hover:scale-105"
+                  className="group/btn relative w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all cursor-pointer transform hover:scale-[1.02] hover:from-blue-400 hover:to-indigo-500 active:scale-[0.98]"
                 >
-                  {quiz.title}
+                  <span className="relative z-10 flex items-center justify-center space-x-3">
+                    <span className="text-lg">{quiz.title}</span>
+                  </span>
                 </button>
               </li>
             ))}
@@ -126,7 +129,7 @@ export default function Home() {
   const currentCard = flashcards[cardIndex];
 
   return (
-    <main className="p-8 min-h-screen bg-gray-900 text-center">
+    <main className="p-8 min-h-screen text-center">
       <h1 className="text-3xl font-bold mb-8">{selectedQuiz.title}</h1>
       <div className="mb-4 text-lg text-gray-200">
         {cardIndex + 1} / {flashcards.length}
@@ -141,32 +144,83 @@ export default function Home() {
         <button
           onClick={() => setCardIndex(cardIndex - 1)}
           disabled={cardIndex === 0}
-          className={`px-4 py-2 rounded bg-gray-300 text-gray-700 font-medium transition cursor-pointer hover:scale-105 ${
+          className={`group/btn relative bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 cursor-pointer transform active:scale-[0.98] ${
             cardIndex === 0
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-400"
+              ? "opacity-40 cursor-not-allowed"
+              : "hover:from-gray-400 hover:to-gray-500 hover:scale-[1.02] hover:shadow-gray-500/25"
           }`}
         >
-          Previous
+          <span className="relative z-10 flex items-center justify-center space-x-2">
+            <svg
+              className={`w-4 h-4 transition-transform ${
+                cardIndex === 0 ? "" : "group-hover/btn:-translate-x-1"
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 17l-5-5 5-5M18 12H6"
+              />
+            </svg>
+            <span>Previous</span>
+          </span>
         </button>
         <button
           onClick={() => setCardIndex(cardIndex + 1)}
           disabled={cardIndex === flashcards.length - 1}
-          className={`px-4 py-2 rounded bg-blue-500 text-white font-medium transition cursor-pointer hover:scale-105 ${
+          className={`group/btn relative bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 cursor-pointer transform active:scale-[0.98] ${
             cardIndex === flashcards.length - 1
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-blue-600"
+              ? "opacity-40 cursor-not-allowed"
+              : "hover:from-blue-400 hover:to-indigo-500 hover:scale-[1.02] hover:shadow-blue-500/25"
           }`}
         >
-          Next
+          <span className="relative z-10 flex items-center justify-center space-x-2">
+            <span>Next</span>
+            <svg
+              className={`w-4 h-4 transition-transform ${
+                cardIndex === flashcards.length - 1
+                  ? ""
+                  : "group-hover/btn:translate-x-1"
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7l5 5-5 5M6 12h12"
+              />
+            </svg>
+          </span>
         </button>
       </div>
-      <div className="mt-8">
+      <div className="mt-8 flex justify-center">
         <button
           onClick={() => setSelectedQuiz(null)}
-          className="px-4 py-2 rounded bg-gray-500 text-white font-medium hover:bg-gray-600 transition cursor-pointer hover:scale-105"
+          className="group/btn relative bg-gradient-to-r from-purple-500 to-violet-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-purple-500/25 transition-all duration-300 cursor-pointer transform hover:scale-[1.02] hover:from-purple-400 hover:to-violet-500 active:scale-[0.98]"
         >
-          Back to Quiz List
+          <span className="relative z-10 flex items-center justify-center space-x-2">
+            <svg
+              className="w-4 h-4 transition-transform group-hover/btn:-translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 17l-5-5 5-5M18 12H6"
+              />
+            </svg>
+            <span>Back to Quiz List</span>
+          </span>
         </button>
       </div>
     </main>
