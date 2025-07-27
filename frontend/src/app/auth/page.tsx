@@ -86,7 +86,7 @@ export default function AuthPage() {
 
   const handleGithubAuth = () => {
     // Redirect to Django's GitHub OAuth
-    window.location.href = `${API_BASE_URL}/auth/login/github-oauth2/`;
+    window.location.href = `${API_BASE_URL}/auth/login/github/`;
   };
 
   const handleContinueAsGuest = () => {
