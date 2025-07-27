@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiCall } from "@/lib/api";
+import { getGuestQuizzes, GuestQuiz } from "@/lib/guestStorage";
 import Card from "./Card";
 
 interface FlashCard {
@@ -17,6 +18,7 @@ interface Quiz {
   description: string;
   created_at: string;
   flashcards: FlashCard[];
+  isGuest?: boolean; // Optional flag for guest quizzes
 }
 
 export default function Home() {
@@ -28,19 +30,71 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    // Check authentication status
+  const loadQuizzes = async () => {
     const token = localStorage.getItem("access_token");
     setIsAuthenticated(!!token);
 
-    // Fetch quizzes using API utility
-    apiCall("/api/quizzes/")
-      .then((res) => res.json())
-      .then((data) => {
-        setQuizzes(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    try {
+      let serverQuizzes: Quiz[] = [];
+
+      if (token) {
+        // Fetch authenticated user quizzes if logged in
+        const response = await apiCall("/api/quizzes/");
+        serverQuizzes = await response.json();
+      } else {
+        // Fetch public quizzes for guest users
+        try {
+          const response = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            }/api/public-quizzes/`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            serverQuizzes = await response.json();
+          }
+        } catch (publicQuizError) {
+          console.log(
+            "No public quizzes available or endpoint not found:",
+            publicQuizError
+          );
+          // Continue with empty serverQuizzes array
+        }
+      }
+
+      // Always fetch guest quizzes
+      const guestQuizzes = getGuestQuizzes();
+
+      // Combine quizzes with guest quizzes first (most recent)
+      const allQuizzes = [...guestQuizzes, ...serverQuizzes];
+
+      setQuizzes(allQuizzes);
+    } catch (error) {
+      console.error("Error loading quizzes:", error);
+      // If server fails, still show guest quizzes
+      const guestQuizzes = getGuestQuizzes();
+      setQuizzes(guestQuizzes);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadQuizzes();
+
+    // Refresh quizzes when the user returns to the page
+    const handleFocus = () => loadQuizzes();
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -105,7 +159,7 @@ export default function Home() {
         <div className="flex justify-center">
           <ul className="max-w-2xl mx-auto space-y-4">
             {quizzes.map((quiz) => (
-              <li key={quiz.id}>
+              <li key={`${quiz.isGuest ? "guest" : "server"}-${quiz.id}`}>
                 <button
                   onClick={() => {
                     setSelectedQuiz(quiz);
@@ -113,8 +167,20 @@ export default function Home() {
                   }}
                   className="group/btn relative w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all cursor-pointer transform hover:scale-[1.02] hover:from-blue-400 hover:to-indigo-500 active:scale-[0.98]"
                 >
-                  <span className="relative z-10 flex items-center justify-center space-x-3">
+                  <span className="relative z-10 flex items-center justify-between">
                     <span className="text-lg">{quiz.title}</span>
+                    <div className="flex items-center space-x-2">
+                      {quiz.isGuest && (
+                        <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
+                          Guest Session
+                        </span>
+                      )}
+                      {!quiz.isGuest && !isAuthenticated && (
+                        <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                          Public
+                        </span>
+                      )}
+                    </div>
                   </span>
                 </button>
               </li>
