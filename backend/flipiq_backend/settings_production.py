@@ -124,6 +124,12 @@ SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 USE_TLS = True
 
+# Redirect URLs - point to frontend dashboard
+LOGIN_REDIRECT_URL = 'https://flipiq-frontend.vercel.app/dashboard'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'https://flipiq-frontend.vercel.app/dashboard'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'https://flipiq-frontend.vercel.app/dashboard'
+LOGOUT_REDIRECT_URL = 'https://flipiq-frontend.vercel.app/auth'
+
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
