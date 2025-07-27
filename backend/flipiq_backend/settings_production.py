@@ -104,6 +104,12 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
+# Temporarily disable CSRF for debugging admin login
+CSRF_TRUSTED_ORIGINS = [
+    'https://flipiq-production.up.railway.app',
+    'http://flipiq-production.up.railway.app',
+]
+
 # HTTPS settings (uncomment when using HTTPS)
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
