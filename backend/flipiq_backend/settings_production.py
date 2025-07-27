@@ -52,13 +52,27 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
-# Don't modify middleware for now - use base settings
-# MIDDLEWARE modifications temporarily disabled for debugging
+# Add WhiteNoise middleware for static files
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+]
 
-# Static files (temporarily simplified for debugging)
+# Static files configuration for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Disabled for debugging
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Additional static files directories (if needed)
+STATICFILES_DIRS = []
 
 # Ensure staticfiles directory exists
 os.makedirs(STATIC_ROOT, exist_ok=True)
