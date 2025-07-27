@@ -11,7 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# Use regular settings for debugging
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings')
+# Use production settings on Railway
+if 'DATABASE_URL' in os.environ:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings_production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flipiq_backend.settings')
 
 application = get_wsgi_application()

@@ -17,25 +17,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse, HttpResponse
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Ultra simple test endpoint
-def test_endpoint(request):
-    logger.info(f"TEST ENDPOINT HIT: {request.method} {request.path}")
-    print(f"TEST ENDPOINT HIT: {request.method} {request.path}")
-    return HttpResponse("WORKING", content_type="text/plain")
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from quiz.views_auth import RegisterView
+from accounts.views import profile
 
 def health_check(request):
-    logger.info(f"HEALTH CHECK HIT: {request.method} {request.path}")
-    print(f"HEALTH CHECK HIT: {request.method} {request.path}")
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
 
 urlpatterns = [
     path('', health_check, name='health_check'),
-    path('test/', test_endpoint, name='test'),
     path('admin/', admin.site.urls),
+    path('api/', include('quiz.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='register'),
+    path('auth/', include('social_django.urls', namespace='social')),
+    path('accounts/profile/', profile, name='profile'),
 ]
