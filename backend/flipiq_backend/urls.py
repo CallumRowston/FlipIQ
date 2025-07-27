@@ -28,13 +28,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 from quiz.views_auth import RegisterView
-from accounts.views import profile
 
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
@@ -46,7 +45,5 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
-    path('auth/', include('social_django.urls', namespace='social')),  # GitHub OAuth URLs
-    path('accounts/profile/', profile, name='profile'),
 ]
 

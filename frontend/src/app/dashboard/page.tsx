@@ -49,57 +49,25 @@ export default function Home() {
           console.log("Error fetching user quizzes:", error);
         }
       } else {
-        // No JWT token - check if user is authenticated via Django session (OAuth)
+        // No JWT token - user is not authenticated, show public quizzes
         try {
-          // First, try to access user profile endpoint to check session auth
-          const sessionCheckResponse = await fetch(
+          const response = await fetch(
             `${
               process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-            }/accounts/profile/`,
+            }/api/quizzes/`,
             {
               method: "GET",
-              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
           );
 
-          if (sessionCheckResponse.ok) {
-            // User is authenticated via Django session (OAuth user)
-            isUserAuthenticated = true;
-
-            // Fetch their personal quizzes using session auth
-            const response = await fetch(
-              `${
-                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-              }/api/quizzes/`,
-              {
-                method: "GET",
-                credentials: "include",
-              }
-            );
-
-            if (response.ok) {
-              serverQuizzes = await response.json();
-            }
-          } else {
-            // Not authenticated - fetch public quizzes only
-            const response = await fetch(
-              `${
-                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-              }/api/quizzes/`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-
-            if (response.ok) {
-              serverQuizzes = await response.json();
-            }
+          if (response.ok) {
+            serverQuizzes = await response.json();
           }
         } catch (error) {
-          console.log("Error checking authentication:", error);
+          console.log("Error fetching public quizzes:", error);
         }
       }
 
