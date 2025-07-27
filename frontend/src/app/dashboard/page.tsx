@@ -42,12 +42,12 @@ export default function Home() {
         const response = await apiCall("/api/quizzes/");
         serverQuizzes = await response.json();
       } else {
-        // Fetch public quizzes for guest users
+        // Fetch public quizzes for guest users (same endpoint, but without auth)
         try {
           const response = await fetch(
             `${
               process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-            }/api/public-quizzes/`,
+            }/api/quizzes/`,
             {
               method: "GET",
               headers: {
@@ -61,7 +61,7 @@ export default function Home() {
           }
         } catch (publicQuizError) {
           console.log(
-            "No public quizzes available or endpoint not found:",
+            "No public quizzes available or endpoint error:",
             publicQuizError
           );
           // Continue with empty serverQuizzes array
