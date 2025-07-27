@@ -162,3 +162,9 @@ LOGOUT_REDIRECT_URL = 'http://localhost:3000/auth'
 
 # OpenAI Settings
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+
+# Session settings for cross-domain OAuth (development)
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = False  # False for development (HTTP)
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = False

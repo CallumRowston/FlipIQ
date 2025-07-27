@@ -115,6 +115,12 @@ CSRF_TRUSTED_ORIGINS = [
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 
+# Session settings for cross-domain OAuth
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True  # Required when SameSite=None
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
 # GitHub OAuth settings for production
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
