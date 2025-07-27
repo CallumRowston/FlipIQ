@@ -125,10 +125,10 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 USE_TLS = True
 
 # Redirect URLs - point to frontend dashboard
-LOGIN_REDIRECT_URL = 'flip-iq.vercel.app/dashboard'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'flip-iq.vercel.app/dashboard'
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'flip-iq.vercel.app/dashboard'
-LOGOUT_REDIRECT_URL = 'flip-iq.vercel.app/auth'
+LOGIN_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
+LOGOUT_REDIRECT_URL = 'https://flip-iq.vercel.app/auth'
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
