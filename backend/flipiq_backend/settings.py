@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True  # Allow credentials for OAuth sessions
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,9 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'quiz',
-    'accounts',  # Add accounts app
     'corsheaders',
-    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -62,7 +59,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',  # Add social auth middleware
 ]
 
 ROOT_URLCONF = 'flipiq_backend.urls'
@@ -150,26 +146,10 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Social Auth Settings
+# Authentication settings
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
-SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
-SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
-SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
-
-# Redirect URLs - point to frontend dashboard
-LOGIN_REDIRECT_URL = 'http://localhost:3000/dashboard'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:3000/dashboard'
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'http://localhost:3000/dashboard'
-LOGOUT_REDIRECT_URL = 'http://localhost:3000/auth'
 
 # OpenAI Settings
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-
-# Session settings for cross-domain OAuth (development)
-SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SECURE = False  # False for development (HTTP)
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = False

@@ -104,42 +104,18 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Temporarily disable CSRF for debugging admin login
+# CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     'https://flipiq-production.up.railway.app',
     'http://flipiq-production.up.railway.app',
-    'https://flip-iq.vercel.app',  # Add frontend domain for OAuth sessions
+    'https://flip-iq.vercel.app',
 ]
 
-# HTTPS settings (uncomment when using HTTPS)
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-
-# Session settings for cross-domain OAuth
-SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SECURE = True  # Required when SameSite=None
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = True
-
-# GitHub OAuth settings for production
-SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
-SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
-SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
-
-# Force HTTPS for OAuth redirects
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-USE_TLS = True
-
 # Redirect URLs - point to frontend dashboard
-LOGIN_URL = '/auth/login/github/'  # Point to GitHub OAuth instead of non-existent login page
 LOGIN_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
 LOGOUT_REDIRECT_URL = 'https://flip-iq.vercel.app/auth'
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
