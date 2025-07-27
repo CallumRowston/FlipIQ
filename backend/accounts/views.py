@@ -1,6 +1,11 @@
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import JsonResponse
 
-@login_required
 def profile(request):
-    return HttpResponse(f"<h1>Welcome, {request.user.username}!</h1><p>This is your profile page.</p>")
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'authenticated': True,
+            'username': request.user.username,
+            'email': request.user.email
+        })
+    else:
+        return JsonResponse({'authenticated': False}, status=401)
