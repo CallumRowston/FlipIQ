@@ -108,6 +108,7 @@ X_FRAME_OPTIONS = 'DENY'
 CSRF_TRUSTED_ORIGINS = [
     'https://flipiq-production.up.railway.app',
     'http://flipiq-production.up.railway.app',
+    'https://flip-iq.vercel.app',  # Add frontend domain for OAuth sessions
 ]
 
 # HTTPS settings (uncomment when using HTTPS)
