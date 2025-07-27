@@ -32,52 +32,77 @@ export default function Home() {
 
   const loadQuizzes = async () => {
     const token = localStorage.getItem("access_token");
-    
+    let isUserAuthenticated = !!token; // Start with JWT token check
+
     try {
       let serverQuizzes: Quiz[] = [];
-      let userAuthenticated = false;
 
-      // Try to fetch user quizzes - this will work for both JWT and session auth
-      try {
-        const response = await apiCall("/api/quizzes/");
-        if (response.ok) {
-          serverQuizzes = await response.json();
-          userAuthenticated = true;
-        }
-      } catch (error) {
-        console.log("User not authenticated, fetching public quizzes");
-      }
-
-      // If user is not authenticated, fetch public quizzes
-      if (!userAuthenticated) {
+      if (token) {
+        // User has JWT token - fetch their personal quizzes
         try {
-          const response = await fetch(
-            `${
-              process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-            }/api/quizzes/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include", // Include cookies for potential session auth
-            }
-          );
-
+          const response = await apiCall("/api/quizzes/");
           if (response.ok) {
             serverQuizzes = await response.json();
           }
-        } catch (publicQuizError) {
-          console.log(
-            "No public quizzes available or endpoint error:",
-            publicQuizError
+        } catch (error) {
+          console.log("Error fetching user quizzes:", error);
+        }
+      } else {
+        // No JWT token - check if user is authenticated via Django session (OAuth)
+        try {
+          // First, try to access user profile endpoint to check session auth
+          const sessionCheckResponse = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            }/accounts/profile/`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
           );
-          // Continue with empty serverQuizzes array
+
+          if (sessionCheckResponse.ok) {
+            // User is authenticated via Django session (OAuth user)
+            isUserAuthenticated = true;
+
+            // Fetch their personal quizzes
+            const response = await fetch(
+              `${
+                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+              }/api/quizzes/`,
+              {
+                method: "GET",
+                credentials: "include",
+              }
+            );
+
+            if (response.ok) {
+              serverQuizzes = await response.json();
+            }
+          } else {
+            // Not authenticated - fetch public quizzes
+            const response = await fetch(
+              `${
+                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+              }/api/quizzes/`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (response.ok) {
+              serverQuizzes = await response.json();
+            }
+          }
+        } catch (error) {
+          console.log("Error checking authentication:", error);
         }
       }
 
-      // Set authentication status based on whether we got user quizzes OR have a JWT token
-      setIsAuthenticated(userAuthenticated || !!token);
+      setIsAuthenticated(isUserAuthenticated);
 
       // Always fetch guest quizzes
       const guestQuizzes = getGuestQuizzes();
