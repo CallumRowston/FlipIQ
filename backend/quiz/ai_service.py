@@ -101,3 +101,16 @@ class FlashCardAIService:
             )
         
         return quiz
+
+    def generate_flashcards_only(self, title, topic, num_cards=5):
+        """
+        Generate flashcards data for guest users (no database save)
+        """
+        flashcards_data = self.generate_flashcards(topic, num_cards)
+        
+        # Return quiz data structure without saving to database
+        return {
+            'title': title,
+            'description': f"AI-generated quiz about {topic}",
+            'flashcards': flashcards_data
+        }

@@ -62,11 +62,16 @@ class GenerateQuizView(APIView):
         
         try:
             ai_service = FlashCardAIService()
-            # Pass the user to associate the quiz with them
-            user = request.user if request.user.is_authenticated else None
-            quiz = ai_service.create_quiz_with_flashcards(title, topic, num_cards, user=user)
-            serializer = QuizSerializer(quiz)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+            if not request.user.is_authenticated:
+                # For guest users, generate content but don't save to database
+                quiz_data = ai_service.generate_flashcards_only(title, topic, num_cards)
+                return Response(quiz_data, status=status.HTTP_200_OK)
+            else:
+                # For authenticated users, generate and save to database
+                quiz = ai_service.create_quiz_with_flashcards(title, topic, num_cards, user=request.user)
+                serializer = QuizSerializer(quiz)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response(
                 {'error': str(e)}, 
