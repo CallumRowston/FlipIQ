@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiCall } from "@/lib/api";
 import { saveGuestQuiz } from "@/lib/guestStorage";
@@ -10,9 +10,14 @@ export default function GenerateQuiz() {
   const [numCards, setNumCards] = useState(5);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  const isAuthenticated = !!localStorage.getItem("access_token");
+  useEffect(() => {
+    setIsClient(true);
+    setIsAuthenticated(!!localStorage.getItem("access_token"));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +53,7 @@ export default function GenerateQuiz() {
         });
       }
       // For authenticated users, the quiz is already saved on the server
-      
+
       // Redirect to the dashboard to see the new quiz
       router.push("/dashboard");
     } catch (err) {
@@ -57,6 +62,23 @@ export default function GenerateQuiz() {
       setLoading(false);
     }
   };
+
+  // Prevent rendering until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <main className="p-8 min-h-screen text-white">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-3xl font-bold mb-8 text-center">
+            Generate AI Quiz
+          </h1>
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-gray-300 mt-4">Loading...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="p-8 min-h-screen text-white">
@@ -69,8 +91,9 @@ export default function GenerateQuiz() {
           <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
             <div className="flex items-center space-x-2">
               <span className="text-yellow-200 text-sm">
-                <strong>Guest Mode:</strong> AI Generated quizzes will not be saved after you close this window. 
-                <button 
+                <strong>Guest Mode:</strong> AI Generated quizzes will not be
+                saved after you close this window.
+                <button
                   onClick={() => router.push("/auth")}
                   className="text-yellow-300 underline hover:text-yellow-100 ml-1 cursor-pointer"
                 >
