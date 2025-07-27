@@ -32,13 +32,14 @@ export default function Home() {
 
   const loadQuizzes = async () => {
     const token = localStorage.getItem("access_token");
-    let isUserAuthenticated = !!token; // Start with JWT token check
+    let isUserAuthenticated = false;
 
     try {
       let serverQuizzes: Quiz[] = [];
 
       if (token) {
-        // User has JWT token - fetch their personal quizzes
+        // User has JWT token - they are authenticated
+        isUserAuthenticated = true;
         try {
           const response = await apiCall("/api/quizzes/");
           if (response.ok) {
@@ -65,7 +66,7 @@ export default function Home() {
             // User is authenticated via Django session (OAuth user)
             isUserAuthenticated = true;
 
-            // Fetch their personal quizzes
+            // Fetch their personal quizzes using session auth
             const response = await fetch(
               `${
                 process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -80,7 +81,7 @@ export default function Home() {
               serverQuizzes = await response.json();
             }
           } else {
-            // Not authenticated - fetch public quizzes
+            // Not authenticated - fetch public quizzes only
             const response = await fetch(
               `${
                 process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -121,7 +122,6 @@ export default function Home() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     loadQuizzes();
 

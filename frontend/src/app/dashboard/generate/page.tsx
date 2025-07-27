@@ -24,35 +24,58 @@ export default function GenerateQuiz() {
     setLoading(true);
     setError("");
 
-    const isAuthenticated = !!localStorage.getItem("access_token");
-
     try {
-      // Always call the AI API to generate the quiz content
-      const response = await apiCall("/api/generate-quiz/", {
-        method: "POST",
-        body: JSON.stringify({
-          title,
-          topic,
-          num_cards: numCards,
-        }),
-      });
+      if (isAuthenticated) {
+        // For authenticated users, call the server API to generate and save the quiz
+        const response = await apiCall("/api/generate-quiz/", {
+          method: "POST",
+          body: JSON.stringify({
+            title,
+            topic,
+            num_cards: numCards,
+          }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate quiz");
-      }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to generate quiz");
+        }
 
-      const quizData = await response.json();
+        // Quiz is already saved on the server for authenticated users
+      } else {
+        // For guest users, call the API but don't save to server - just get the AI-generated content
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+          }/api/generate-quiz/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title,
+              topic,
+              num_cards: numCards,
+              guest_mode: true, // Indicate this is a guest request
+            }),
+          }
+        );
 
-      if (!isAuthenticated) {
-        // For guest users, save the AI-generated quiz locally
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to generate quiz");
+        }
+
+        const quizData = await response.json();
+
+        // For guest users, save the AI-generated quiz locally only
         saveGuestQuiz({
           title: quizData.title,
           description: quizData.description,
           flashcards: quizData.flashcards,
         });
       }
-      // For authenticated users, the quiz is already saved on the server
 
       // Redirect to the dashboard to see the new quiz
       router.push("/dashboard");
