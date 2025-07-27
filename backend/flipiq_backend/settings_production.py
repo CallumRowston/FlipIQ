@@ -120,6 +120,10 @@ SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET')
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 
+# Force HTTPS for OAuth redirects
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+USE_TLS = True
+
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
