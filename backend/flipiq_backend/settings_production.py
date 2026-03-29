@@ -63,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 # Static files configuration for production
@@ -104,18 +103,7 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# CSRF settings
-CSRF_TRUSTED_ORIGINS = [
-    'https://flipiq-production.up.railway.app',
-    'http://flipiq-production.up.railway.app',
-    'https://flip-iq.vercel.app',
-]
-
-# Redirect URLs - point to frontend dashboard
-LOGIN_REDIRECT_URL = 'https://flip-iq.vercel.app/dashboard'
-LOGOUT_REDIRECT_URL = 'https://flip-iq.vercel.app/auth'
-
-# Authentication backends
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
+# HTTPS settings (uncomment when using HTTPS)
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
