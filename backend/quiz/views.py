@@ -3,12 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.db.models import Q
-import logging
 from .models import Quiz, FlashCard
 from .serializers import QuizSerializer, FlashCardSerializer
 from .ai_service import FlashCardAIService
-
-logger = logging.getLogger(__name__)
 
 class QuizListCreateView(generics.ListCreateAPIView):
     serializer_class = QuizSerializer
@@ -57,8 +54,6 @@ class GenerateQuizView(APIView):
         topic = request.data.get('topic')
         num_cards = request.data.get('num_cards', 5)
         
-        logger.info(f"GenerateQuizView: Received request - title={title}, topic={topic}, num_cards={num_cards}")
-        
         if not title or not topic:
             return Response(
                 {'error': 'Both title and topic are required'}, 
@@ -66,16 +61,18 @@ class GenerateQuizView(APIView):
             )
         
         try:
-            logger.info(f"GenerateQuizView: Starting AI quiz generation")
             ai_service = FlashCardAIService()
-            # Pass the user to associate the quiz with them
-            user = request.user if request.user.is_authenticated else None
-            quiz = ai_service.create_quiz_with_flashcards(title, topic, num_cards, user=user)
-            serializer = QuizSerializer(quiz)
-            logger.info(f"GenerateQuizView: Quiz created successfully - quiz_id={quiz.id}")
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+            if not request.user.is_authenticated:
+                # For guest users, generate content but don't save to database
+                quiz_data = ai_service.generate_flashcards_only(title, topic, num_cards)
+                return Response(quiz_data, status=status.HTTP_200_OK)
+            else:
+                # For authenticated users, generate and save to database
+                quiz = ai_service.create_quiz_with_flashcards(title, topic, num_cards, user=request.user)
+                serializer = QuizSerializer(quiz)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(f"GenerateQuizView: Error generating quiz - {str(e)}", exc_info=True)
             return Response(
                 {'error': str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

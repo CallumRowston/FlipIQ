@@ -1,10 +1,7 @@
 import openai
 import json
-import logging
 from django.conf import settings
 from .models import Quiz, FlashCard
-
-logger = logging.getLogger(__name__)
 
 class FlashCardAIService:
     def __init__(self):
@@ -14,7 +11,6 @@ class FlashCardAIService:
         """
         Generate flashcards for a given topic using OpenAI
         """
-        logger.info(f"Generating flashcards for topic: {topic}, num_cards: {num_cards}")
         prompt = f"""
         Generate {num_cards} educational flashcards about {topic}.
         Return the response as a JSON array where each object has 'question' and 'answer' fields.
@@ -35,13 +31,11 @@ class FlashCardAIService:
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=1000,
-                temperature=0.7,
-                timeout=30
+                temperature=0.7
             )
             
-            logger.info(f"OpenAI response received successfully")
-            
             content = response.choices[0].message.content.strip()
+            print(f"OpenAI Response: {content}")  # Debug log
             
             # Check if content is empty
             if not content:
@@ -81,8 +75,6 @@ class FlashCardAIService:
         except openai.APIError as api_error:
             raise Exception(f"OpenAI API error: {str(api_error)}")
         except Exception as e:
-            if "timeout" in str(e).lower():
-                raise Exception("Request to OpenAI API timed out. Please try again.")
             if "Error generating flashcards:" in str(e):
                 raise e  # Re-raise our custom errors
             raise Exception(f"Error generating flashcards: {str(e)}")
@@ -109,3 +101,16 @@ class FlashCardAIService:
             )
         
         return quiz
+
+    def generate_flashcards_only(self, title, topic, num_cards=5):
+        """
+        Generate flashcards data for guest users (no database save)
+        """
+        flashcards_data = self.generate_flashcards(topic, num_cards)
+        
+        # Return quiz data structure without saving to database
+        return {
+            'title': title,
+            'description': f"AI-generated quiz about {topic}",
+            'flashcards': flashcards_data
+        }

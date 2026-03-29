@@ -1,5 +1,17 @@
 """
-URL configuration for flipiq_backend project.
+URL configuration for def health_check(request):
+    return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
+
+urlpatterns = [
+    path('', health_check, name='health_check'),
+    path('admin/', admin.site.urls),
+    path('api/', include('quiz.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', RegisterView.as_view(), name='register'),
+    path('auth/', include('social_django.urls', namespace='social')),
+    path('accounts/profile/', profile, name='profile'),
+]d project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -16,13 +28,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 from quiz.views_auth import RegisterView
-from accounts.views import profile
 
 def health_check(request):
     return JsonResponse({"status": "healthy", "message": "FlipIQ Backend is running"})
@@ -34,6 +45,5 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
-    path('auth/', include('social_django.urls', namespace='social')),
-    path('accounts/profile/', profile, name='profile'),
 ]
+
